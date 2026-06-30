@@ -54,14 +54,26 @@ function updateBadge() {
   });
 }
 
-function addToCart(name, price, img) {
-  const cart = getCart(), idx = cart.findIndex(i => i.name === name);
-  idx > -1 ? cart[idx].qty++ : cart.push({ name, price, img, qty: 1 });
+function addApiProductToCart(product) {
+
+  const cart = getCart();
+
+  const idx = cart.findIndex(i => i.name === product.title);
+
+  if (idx > -1) {
+    cart[idx].qty++;
+  } else {
+    cart.push({
+      name: product.title,
+      price: Math.round(product.price * 85),
+      img: product.thumbnail,
+      qty: 1
+    });
+  }
+
   saveCart(cart);
-  const btn = event.target, orig = btn.textContent;
-  btn.textContent = '✓ Added!';
-  btn.style.cssText = 'background:var(--clr-accent-alt);color:#000';
-  setTimeout(() => { btn.textContent = orig; btn.style.cssText = ''; }, 1200);
+
+  alert(product.title + " added to cart!");
 }
 
 // CART PAGE
