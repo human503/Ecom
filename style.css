@@ -567,3 +567,234 @@ footer,.footer{background-color:var(--clr-footer-bg);color:var(--clr-text-primar
         background:transparent;
     }
 }
+
+#products{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+    padding:40px;
+}
+
+.hot-deals-page{
+    padding:40px;
+    text-align:center;
+}
+
+.hot-subtitle{
+    color:#777;
+    margin-bottom:30px;
+}
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+    margin-top:30px;
+}
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+    padding:40px;
+}
+
+/* ================= HOT DEALS PAGE ================= */
+
+.hot-deals-page{
+    min-height:100vh;
+    padding:50px 60px 80px;
+    background:
+        radial-gradient(circle at top right,#ffe7b3 0%,transparent 28%),
+        radial-gradient(circle at bottom left,#ffd4c8 0%,transparent 25%),
+        linear-gradient(180deg,#fafafa,#f3f5f9);
+}
+
+.hot-deals-page h1{
+    text-align:center;
+    font-size:52px;
+    font-weight:800;
+    color:#222;
+    margin-bottom:10px;
+}
+
+.hot-subtitle{
+    text-align:center;
+    font-size:18px;
+    color:#666;
+    margin-bottom:45px;
+}
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:35px;
+}
+
+/* ================= PAGE ================= */
+
+.hot-deals-page{
+    min-height:100vh;
+    padding:60px;
+    background:
+    radial-gradient(circle at top left,rgba(66,133,244,.18),transparent 30%),
+    radial-gradient(circle at top right,rgba(0,188,212,.12),transparent 35%),
+    linear-gradient(180deg,#071321,#02060d);
+}
+
+.hot-deals-page h1{
+    text-align:center;
+    font-size:58px;
+    color:#ffffff;
+    font-weight:900;
+    letter-spacing:2px;
+    text-shadow:0 0 25px rgba(0,162,255,.45);
+}
+
+.hot-subtitle{
+    text-align:center;
+    color:#b9c8da;
+    font-size:18px;
+    margin-bottom:55px;
+}
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:35px;
+}
+
+
+/* ================= PRODUCT CARD ================= */
+
+.hot-card{
+    background:linear-gradient(180deg,#16293f,#0b1523);
+    border:1px solid rgba(80,150,255,.15);
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    text-align:center;
+    transition:.35s;
+    box-shadow:
+    0 15px 35px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.hot-card:hover{
+    transform:translateY(-10px);
+    border-color:#52b6ff;
+    box-shadow:
+    0 25px 55px rgba(0,0,0,.6),
+    0 0 30px rgba(0,162,255,.22);
+}
+
+
+/* Ribbon */
+
+.hot-card::before{
+    content:"HOT DEAL";
+    position:absolute;
+    top:18px;
+    left:-42px;
+    width:150px;
+    padding:8px 0;
+    background:linear-gradient(135deg,#0ea5e9,#2563eb);
+    color:white;
+    font-size:12px;
+    font-weight:bold;
+    transform:rotate(-45deg);
+    letter-spacing:1px;
+    z-index:5;
+}
+
+
+/* Image */
+
+.hot-card img{
+    width:100%;
+    height:240px;
+    object-fit:contain;
+    padding:20px;
+    background:linear-gradient(180deg,#1d3550,#122236);
+    transition:.4s;
+}
+
+.hot-card:hover img{
+    transform:scale(1.08);
+}
+
+
+/* Product Name */
+
+.hot-card h3{
+    color:white;
+    font-size:20px;
+    margin:18px;
+    line-height:1.4;
+    min-height:56px;
+}
+
+
+/* Price */
+
+.price{
+    color:#49c7ff;
+    font-size:30px;
+    font-weight:800;
+    margin-bottom:18px;
+    text-shadow:0 0 15px rgba(73,199,255,.35);
+}
+
+
+/* Button */
+
+.hot-card button{
+    width:85%;
+    margin-bottom:22px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(180deg,#2f80ed,#1456b8);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 6px 20px rgba(47,128,237,.35);
+}
+
+.hot-card button:hover{
+    background:linear-gradient(180deg,#4aa8ff,#1c73e8);
+    transform:translateY(-3px);
+}
+
+
+/* Floating glowing dots */
+
+.hot-deals-page::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+    radial-gradient(circle,#2f80ed 2px,transparent 2px),
+    radial-gradient(circle,#7dd3fc 3px,transparent 3px),
+    radial-gradient(circle,#60a5fa 2px,transparent 2px);
+    background-size:180px 180px,250px 250px,320px 320px;
+    opacity:.14;
+}
+
+
+/* Decorative ribbons */
+
+.hot-deals-page::after{
+    content:"✦";
+    position:fixed;
+    top:30px;
+    right:60px;
+    font-size:90px;
+    color:#53b9ff;
+    opacity:.18;
+    transform:rotate(20deg);
+    pointer-events:none;
+}
