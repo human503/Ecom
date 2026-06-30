@@ -42,86 +42,190 @@ function filterCategory(tab, id) {
   });
 }
 
+// =======================
 // CART HELPERS
-const getCart = () => { try { return JSON.parse(localStorage.getItem('shopx_cart') || '[]'); } catch { return []; } };
-const saveCart = c => { localStorage.setItem('shopx_cart', JSON.stringify(c)); updateBadge(); };
+// =======================
+
+const getCart = () => {
+    try {
+        return JSON.parse(localStorage.getItem("shopx_cart")) || [];
+    } catch {
+        return [];
+    }
+};
+
+const saveCart = (cart) => {
+    localStorage.setItem("shopx_cart", JSON.stringify(cart));
+    updateBadge();
+};
 
 function updateBadge() {
-  const total = getCart().reduce((s, i) => s + i.qty, 0);
-  document.querySelectorAll('#cartCount').forEach(el => {
-    el.textContent = total;
-    el.style.display = total ? 'flex' : 'none';
-  });
+    const total = getCart().reduce((sum, item) => sum + item.qty, 0);
+
+    document.querySelectorAll("#cartCount").forEach(badge => {
+        badge.textContent = total;
+        badge.style.display = total ? "flex" : "none";
+    });
 }
+
+// =======================
+// STATIC PRODUCTS
+// =======================
+
+function addToCart(name, price, img) {
+
+    const cart = getCart();
+
+    const existing = cart.find(item => item.name === name);
+
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({
+            name: name,
+            price: price,
+            img: img,
+            qty: 1
+        });
+    }
+
+    saveCart(cart);
+
+    alert(name + " added to cart!");
+}
+
+// =======================
+// API PRODUCTS
+// =======================
 
 function addApiProductToCart(product) {
 
-  const cart = getCart();
+    const cart = getCart();
 
-  const idx = cart.findIndex(i => i.name === product.title);
+    const existing = cart.find(item => item.name === product.title);
 
-  if (idx > -1) {
-    cart[idx].qty++;
-  } else {
-    cart.push({
-      name: product.title,
-      price: Math.round(product.price * 85),
-      img: product.thumbnail,
-      qty: 1
-    });
-  }
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({
+            name: product.title,
+            price: Math.round(product.price * 85),
+            img: product.thumbnail,
+            qty: 1
+        });
+    }
 
-  saveCart(cart);
+    saveCart(cart);
 
-  alert(product.title + " added to cart!");
+    alert(product.title + " added to cart!");
 }
 
+// =======================
 // CART PAGE
+// =======================
+
 function renderCart() {
-  const box = document.getElementById('cartItemsContainer');
-  const sum = document.getElementById('cartSummary');
-  if (!box) return;
-  const cart = getCart();
-  if (!cart.length) {
-    box.innerHTML = `<div class="empty-cart"><div class="icon">🛒</div><h2>Your cart is empty</h2><p>Nothing added yet.</p><a href="index.html" class="shop-btn">Start Shopping →</a></div>`;
-    if (sum) sum.style.display = 'none';
-    return;
-  }
-  if (sum) sum.style.display = '';
-  box.innerHTML = cart.map((item, i) => `
-    <div class="cart-item">
-      <img src="${item.img}" alt="${item.name}">
-      <div class="cart-item-info">
-        <h4>${item.name}</h4>
-        <p>₹${item.price.toLocaleString('en-IN')} each</p>
-        <div class="qty-ctrl">
-          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
-          <span class="qty-num">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+
+    const box = document.getElementById("cartItemsContainer");
+    const summary = document.getElementById("cartSummary");
+
+    if (!box) return;
+
+    const cart = getCart();
+
+    if (cart.length === 0) {
+
+        box.innerHTML = `
+        <div class="empty-cart">
+            <div class="icon">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p>Nothing added yet.</p>
+            <a href="homepage.html" class="shop-btn">Start Shopping →</a>
+        </div>`;
+
+        if (summary) summary.style.display = "none";
+        return;
+    }
+
+    if (summary) summary.style.display = "block";
+
+    box.innerHTML = cart.map((item, index) => `
+        <div class="cart-item">
+
+            <img src="${item.img}" alt="${item.name}">
+
+            <div class="cart-item-info">
+                <h4>${item.name}</h4>
+
+                <p>₹${item.price.toLocaleString("en-IN")} each</p>
+
+                <div class="qty-ctrl">
+                    <button class="qty-btn" onclick="changeQty(${index},-1)">−</button>
+                    <span class="qty-num">${item.qty}</span>
+                    <button class="qty-btn" onclick="changeQty(${index},1)">+</button>
+                </div>
+
+            </div>
+
+            <div class="cart-item-price">
+                ₹${(item.price * item.qty).toLocaleString("en-IN")}
+            </div>
+
+            <button class="remove-btn" onclick="removeItem(${index})">
+                ✕
+            </button>
+
         </div>
-      </div>
-      <div class="cart-item-price">₹${(item.price*item.qty).toLocaleString('en-IN')}</div>
-      <button class="remove-btn" onclick="removeItem(${i})">✕</button>
-    </div>`).join('');
-  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const del = sub > 999 ? 0 : 99;
-  sum.innerHTML = `<h3>Order Summary</h3>
-    <div class="summary-row"><span>Subtotal</span><span>₹${sub.toLocaleString('en-IN')}</span></div>
-    <div class="summary-row"><span>Delivery</span><span>${del ? '₹'+del : '<span style="color:var(--clr-accent-alt)">FREE</span>'}</span></div>
-    <div class="summary-row total"><span>Total</span><span>₹${(sub+del).toLocaleString('en-IN')}</span></div>
-    <button class="checkout-btn">Proceed to Checkout →</button>`;
+    `).join("");
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+    const delivery = subtotal > 999 ? 0 : 99;
+
+    summary.innerHTML = `
+        <h3>Order Summary</h3>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₹${subtotal.toLocaleString("en-IN")}</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Delivery</span>
+            <span>${delivery ? "₹" + delivery : "<span style='color:lime'>FREE</span>"}</span>
+        </div>
+
+        <div class="summary-row total">
+            <span>Total</span>
+            <span>₹${(subtotal + delivery).toLocaleString("en-IN")}</span>
+        </div>
+
+        <button class="checkout-btn">
+            Proceed to Checkout →
+        </button>
+    `;
 }
 
-function changeQty(i, d) {
-  const cart = getCart();
-  cart[i].qty = Math.max(1, cart[i].qty + d);
-  saveCart(cart); renderCart();
+function changeQty(index, change) {
+
+    const cart = getCart();
+
+    cart[index].qty = Math.max(1, cart[index].qty + change);
+
+    saveCart(cart);
+
+    renderCart();
 }
 
-function removeItem(i) {
-  const cart = getCart();
-  cart.splice(i, 1);
-  saveCart(cart); renderCart();
+function removeItem(index) {
+
+    const cart = getCart();
+
+    cart.splice(index, 1);
+
+    saveCart(cart);
+
+    renderCart();
 }
 
 updateBadge();
@@ -354,3 +458,22 @@ window.addEventListener("load", () => {
     }, 1800);
   }
 });
+
+const accountMenu = document.getElementById("accountMenu");
+const user = localStorage.getItem("shopx_user");
+
+if(user){
+    accountMenu.innerHTML = `
+        <a href="dashboard.html">👤 ${user.split("@")[0]}</a>
+        <a href="#" onclick="logout()">Logout</a>
+    `;
+}else{
+    accountMenu.innerHTML = `
+        <a href="login.html">Login</a>
+    `;
+}
+
+function logout(){
+    localStorage.removeItem("shopx_user");
+    location.reload();
+}
